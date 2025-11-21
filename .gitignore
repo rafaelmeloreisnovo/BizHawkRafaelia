@@ -52,3 +52,14 @@ UpgradeLog.htm
 /packages
 
 launchSettings.json
+
+# Android build artifacts
+**/bin/
+**/obj/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+apk-output/
+apk-summary.md

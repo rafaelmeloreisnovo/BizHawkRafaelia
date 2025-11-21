@@ -1,0 +1,143 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ master, develop, 'copilot/**' ]
+    paths:
+      - 'src/BizHawk.Client.Android/**'
+      - '.github/workflows/android-apk.yml'
+  pull_request:
+    branches: [ master, develop ]
+    paths:
+      - 'src/BizHawk.Client.Android/**'
+      - '.github/workflows/android-apk.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build-android-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install .NET Android workload
+        run: |
+          dotnet workload install android --skip-manifest-update
+          dotnet workload list
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+
+      - name: Restore dependencies
+        run: dotnet restore src/BizHawk.Client.Android/BizHawk.Client.Android.csproj
+
+      - name: Build Android Debug APK
+        run: |
+          dotnet build src/BizHawk.Client.Android/BizHawk.Client.Android.csproj \
+            -c Debug \
+            -f net8.0-android
+
+      - name: Build Android Release APK
+        run: |
+          dotnet publish src/BizHawk.Client.Android/BizHawk.Client.Android.csproj \
+            -c Release \
+            -f net8.0-android \
+            -o ./apk-output
+
+      - name: List generated APK files
+        run: |
+          echo "=== Debug APK Location ==="
+          find src/BizHawk.Client.Android/bin/Debug -name "*.apk" -o -name "*.aab" || echo "No debug APK found"
+          echo ""
+          echo "=== Release APK Location ==="
+          find ./apk-output -name "*.apk" -o -name "*.aab" || echo "No release APK found"
+          echo ""
+          echo "=== All output files ==="
+          ls -laR ./apk-output || echo "Output directory not found"
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: BizHawk-Android-Debug-APK
+          path: |
+            src/BizHawk.Client.Android/bin/Debug/**/*.apk
+            src/BizHawk.Client.Android/bin/Debug/**/*.aab
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: BizHawk-Android-Release-APK
+          path: |
+            apk-output/**/*.apk
+            apk-output/**/*.aab
+          retention-days: 90
+          if-no-files-found: warn
+
+      - name: Generate APK info
+        if: always()
+        run: |
+          echo "## Android APK Build Summary" > apk-summary.md
+          echo "" >> apk-summary.md
+          echo "**Build Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> apk-summary.md
+          echo "**Commit**: ${{ github.sha }}" >> apk-summary.md
+          echo "**Branch**: ${{ github.ref_name }}" >> apk-summary.md
+          echo "" >> apk-summary.md
+          
+          DEBUG_APK=$(find src/BizHawk.Client.Android/bin/Debug -name "*.apk" | head -n 1)
+          RELEASE_APK=$(find ./apk-output -name "*.apk" | head -n 1)
+          
+          if [ -n "$DEBUG_APK" ]; then
+            DEBUG_SIZE=$(ls -lh "$DEBUG_APK" | awk '{print $5}')
+            echo "**Debug APK Size**: $DEBUG_SIZE" >> apk-summary.md
+            echo "**Debug APK**: $(basename "$DEBUG_APK")" >> apk-summary.md
+          else
+            echo "**Debug APK**: Not generated" >> apk-summary.md
+          fi
+          
+          echo "" >> apk-summary.md
+          
+          if [ -n "$RELEASE_APK" ]; then
+            RELEASE_SIZE=$(ls -lh "$RELEASE_APK" | awk '{print $5}')
+            echo "**Release APK Size**: $RELEASE_SIZE" >> apk-summary.md
+            echo "**Release APK**: $(basename "$RELEASE_APK")" >> apk-summary.md
+          else
+            echo "**Release APK**: Not generated" >> apk-summary.md
+          fi
+          
+          echo "" >> apk-summary.md
+          echo "### Installation" >> apk-summary.md
+          echo '```bash' >> apk-summary.md
+          echo "adb install -r <apk-file>" >> apk-summary.md
+          echo '```' >> apk-summary.md
+          
+          cat apk-summary.md
+
+      - name: Upload APK summary
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: APK-Build-Summary
+          path: apk-summary.md
+          retention-days: 30

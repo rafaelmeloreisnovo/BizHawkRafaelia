@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0-android</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
+		<RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
+		<ApplicationId>com.bizhawkrafaelia.emulator</ApplicationId>
+		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationTitle>BizHawk Rafaelia</ApplicationTitle>
+		<Description>Multi-system emulator for Android</Description>
+		<Nullable>disable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<!-- Optimization settings for APK size -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<!-- Enable code trimming to reduce APK size -->
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>link</TrimMode>
+		
+		<!-- AOT compilation for faster startup -->
+		<RunAOTCompilation>false</RunAOTCompilation>
+		
+		<!-- Create separate APK per architecture -->
+		<AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+		
+		<!-- Enable R8 for additional optimization -->
+		<AndroidEnableProguard>true</AndroidEnableProguard>
+		
+		<!-- Link SDK assemblies only -->
+		<AndroidLinkMode>SdkOnly</AndroidLinkMode>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Reference emulation cores and common libraries -->
+		<ProjectReference Include="../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
+		<ProjectReference Include="../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+		<ProjectReference Include="../BizHawk.Common/BizHawk.Common.csproj" />
+		<ProjectReference Include="../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
+		<ProjectReference Include="../BizHawk.Bizware.Input/BizHawk.Bizware.Input.csproj" />
+	</ItemGroup>
+
+	<!-- Native libraries for Android ARM64 -->
+	<ItemGroup>
+		<AndroidNativeLibrary Include="$(SolutionDir)Dist/arm64/libSDL2.so" Link="lib/arm64-v8a/libSDL2.so" />
+		<AndroidNativeLibrary Include="$(SolutionDir)Dist/arm64/libblip_buf.so" Link="lib/arm64-v8a/libblip_buf.so" />
+		<AndroidNativeLibrary Include="$(SolutionDir)Dist/arm64/libcimgui.so" Link="lib/arm64-v8a/libcimgui.so" />
+	</ItemGroup>
+
+	<!-- Android Resources -->
+	<ItemGroup>
+		<AndroidResource Include="Resources\**\*" />
+	</ItemGroup>
+</Project>
