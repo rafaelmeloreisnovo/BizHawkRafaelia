@@ -15,7 +15,7 @@ This document outlines the path to ARM64 support and mobile platform (Android AP
 
 **In Progress**:
 - 🔄 ARM64 (Linux/Android)
-- 🔄 Android APK generation
+- ✅ Android APK generation (infrastructure ready, see [BizHawk.Client.Android](src/BizHawk.Client.Android/))
 
 **Future Targets**:
 - 📋 iOS ARM64
@@ -443,14 +443,17 @@ Based on typical emulator performance:
 - [ ] Optimize performance for ARM NEON
 - [ ] Document build process
 
-### Phase 2: Android APK Generation (Next)
+### Phase 2: Android APK Generation (In Progress)
 
-- [ ] Create Android project structure
+- [x] Create Android project structure
+- [x] Add GitHub Actions workflow for APK building
+- [x] Configure native library integration
+- [x] Set up basic MainActivity and resources
 - [ ] Implement touch controls UI
 - [ ] Port windowing system to Android
 - [ ] Handle Android lifecycle (pause/resume)
 - [ ] Optimize for mobile battery life
-- [ ] Build and test APK
+- [ ] Build and test APK on real devices
 - [ ] Publish to testing track
 
 ### Phase 3: Optimization and Polish
