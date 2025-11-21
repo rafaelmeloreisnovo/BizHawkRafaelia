@@ -67,33 +67,37 @@ namespace BizHawk.Client.Android
 			SetContentView(layout);
 
 			// Initialize emulation system in background
-			_ = InitializeEmulationSystemAsync();
+			// Using Task.Run to properly handle fire-and-forget pattern
+			Task.Run(async () => 
+			{
+				try
+				{
+					await InitializeEmulationSystemAsync();
+				}
+				catch (Exception ex)
+				{
+					RunOnUiThread(() =>
+					{
+						_statusText.Text = $"Error initializing emulation system:\n\n{ex.Message}";
+						_statusText.SetTextColor(global::Android.Graphics.Color.Red);
+					});
+				}
+			});
 		}
 
 		private async Task InitializeEmulationSystemAsync()
 		{
-			try
+			// TODO: Initialize BizHawk emulation cores
+			// This is a placeholder for actual emulation initialization
+			await System.Threading.Tasks.Task.Delay(1000);
+			
+			RunOnUiThread(() =>
 			{
-				// TODO: Initialize BizHawk emulation cores
-				// This is a placeholder for actual emulation initialization
-				await System.Threading.Tasks.Task.Delay(1000);
-				
-				RunOnUiThread(() =>
-				{
-					_statusText.Text = "BizHawk Rafaelia\n\nAndroid Port - Alpha Version\n\n" +
-						"Ready to load ROM files\n\n" +
-						"NOTE: Full emulation UI is under development\n" +
-						"This is a technical preview build";
-				});
-			}
-			catch (Exception ex)
-			{
-				RunOnUiThread(() =>
-				{
-					_statusText.Text = $"Error initializing emulation system:\n\n{ex.Message}";
-					_statusText.SetTextColor(global::Android.Graphics.Color.Red);
-				});
-			}
+				_statusText.Text = "BizHawk Rafaelia\n\nAndroid Port - Alpha Version\n\n" +
+					"Ready to load ROM files\n\n" +
+					"NOTE: Full emulation UI is under development\n" +
+					"This is a technical preview build";
+			});
 		}
 
 		protected override void OnResume()

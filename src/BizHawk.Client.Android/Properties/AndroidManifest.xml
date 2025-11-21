@@ -8,7 +8,10 @@
 	
 	<!-- Permissions -->
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-	<!-- WRITE_EXTERNAL_STORAGE for Android 10 and below. Android 11+ uses scoped storage -->
+	<!-- WARNING: WRITE_EXTERNAL_STORAGE only works on Android 10 and below.
+	     For Android 11+ (API 30+), scoped storage is mandatory.
+	     TODO: Implement scoped storage APIs (MediaStore, SAF) for full compatibility.
+	     See src/BizHawk.Client.Android/TODO.md for migration plan. -->
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.VIBRATE" />
