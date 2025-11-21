@@ -3,7 +3,7 @@
 		<TargetFramework>net8.0-android</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
-		<RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
+		<RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
 		<ApplicationId>com.bizhawkrafaelia.emulator</ApplicationId>
 		<ApplicationVersion>1</ApplicationVersion>
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -43,9 +43,9 @@
 
 	<!-- Native libraries for Android ARM64 -->
 	<ItemGroup>
-		<AndroidNativeLibrary Include="../../Dist/arm64/libSDL2.so" Link="lib/arm64-v8a/libSDL2.so" />
-		<AndroidNativeLibrary Include="../../Dist/arm64/libblip_buf.so" Link="lib/arm64-v8a/libblip_buf.so" />
-		<AndroidNativeLibrary Include="../../Dist/arm64/libcimgui.so" Link="lib/arm64-v8a/libcimgui.so" />
+		<AndroidNativeLibrary Include="$(SolutionDir)Dist/arm64/libSDL2.so" Link="lib/arm64-v8a/libSDL2.so" />
+		<AndroidNativeLibrary Include="$(SolutionDir)Dist/arm64/libblip_buf.so" Link="lib/arm64-v8a/libblip_buf.so" />
+		<AndroidNativeLibrary Include="$(SolutionDir)Dist/arm64/libcimgui.so" Link="lib/arm64-v8a/libcimgui.so" />
 	</ItemGroup>
 
 	<!-- Android Resources -->

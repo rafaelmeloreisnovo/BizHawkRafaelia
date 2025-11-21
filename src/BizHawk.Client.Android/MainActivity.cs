@@ -5,6 +5,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using System;
+using System.Threading.Tasks;
 
 namespace BizHawk.Client.Android
 {
@@ -66,10 +67,10 @@ namespace BizHawk.Client.Android
 			SetContentView(layout);
 
 			// Initialize emulation system in background
-			InitializeEmulationSystem();
+			_ = InitializeEmulationSystemAsync();
 		}
 
-		private async void InitializeEmulationSystem()
+		private async Task InitializeEmulationSystemAsync()
 		{
 			try
 			{

@@ -49,15 +49,13 @@ jobs:
         run: |
           dotnet build src/BizHawk.Client.Android/BizHawk.Client.Android.csproj \
             -c Debug \
-            -f net8.0-android \
-            -p:AndroidSdkDirectory=$ANDROID_SDK_ROOT
+            -f net8.0-android
 
       - name: Build Android Release APK
         run: |
           dotnet publish src/BizHawk.Client.Android/BizHawk.Client.Android.csproj \
             -c Release \
             -f net8.0-android \
-            -p:AndroidSdkDirectory=$ANDROID_SDK_ROOT \
             -o ./apk-output
 
       - name: List generated APK files

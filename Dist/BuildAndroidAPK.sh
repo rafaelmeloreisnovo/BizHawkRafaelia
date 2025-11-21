@@ -28,7 +28,7 @@ fi
 echo -e "${GREEN}✓ .NET SDK found:${NC} $(dotnet --version)"
 
 # Check if Android workload is installed
-if ! dotnet workload list | grep -q "android"; then
+if ! dotnet workload list | grep -E "^android\\s"; then
     echo -e "${YELLOW}Android workload not found. Installing...${NC}"
     dotnet workload install android --skip-manifest-update
     if [ $? -ne 0 ]; then
