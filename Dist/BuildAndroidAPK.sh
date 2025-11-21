@@ -4,8 +4,8 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_DIR="$SCRIPT_DIR/src/BizHawk.Client.Android"
-OUTPUT_DIR="$SCRIPT_DIR/apk-output"
+PROJECT_DIR="$SCRIPT_DIR/../src/BizHawk.Client.Android"
+OUTPUT_DIR="$SCRIPT_DIR/../apk-output"
 
 # Colors for output
 RED='\033[0;31m'
